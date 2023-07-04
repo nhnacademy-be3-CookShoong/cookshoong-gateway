@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 /**
  * properties 파일 설정.
@@ -13,7 +14,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "cookshoong")
+@Component
 public class RouterProperties {
     private String backendPath;
 
