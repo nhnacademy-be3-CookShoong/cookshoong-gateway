@@ -30,9 +30,6 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml sonar:sonar
 
-      #소나큐브
-      - name: Run Sonarqube
-        run: mvn sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_LOGIN }}
 
       # 도커 허브 로그인
       - name: Log in to Docker Hub
@@ -44,6 +41,8 @@ jobs:
       # 이미지 생성
       - name: Build Docker Image
         run: docker build -t jeongjewan/cookshoong-gateway .
+      - name: Run Sonarqube
+        run: mvn sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_LOGIN }}
 
       # 도커 허브 푸시
       - name: Docker Image Push
