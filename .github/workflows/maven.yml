@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 이미지 생성정
+      # 이미지 생성
       - name: Build Docker Image
         run: docker build -t jeongjewan/cookshoong-gateway .
 
