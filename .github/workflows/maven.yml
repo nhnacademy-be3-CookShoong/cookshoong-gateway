@@ -28,7 +28,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
-        run: mvn -B package --file pom.xml sonar:sonar
+        run: mvn -B package --file pom.xml
 
       #소나큐브
       - name: Run Sonarqube
@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 이미지 생성
+      # 이미지 생성정
       - name: Build Docker Image
         run: docker build -t jeongjewan/cookshoong-gateway .
 
