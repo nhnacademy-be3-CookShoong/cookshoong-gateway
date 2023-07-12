@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class RouteLocatorConfig {
     public final RouterProperties routerProperties;
 
+
     @Bean
     public RouteLocator myRoute(RouteLocatorBuilder builder) {
         return builder.routes()
