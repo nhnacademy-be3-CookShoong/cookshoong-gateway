@@ -28,4 +28,12 @@ public class RouterProperties {
     private String deliveryPath;
 
     private String deliveryUrl;
+
+    private String eurekaAuth;
+
+    private String eurekaBackend;
+
+    private String eurekaDelivery;
+
+    private String eurekaBatch;
 }

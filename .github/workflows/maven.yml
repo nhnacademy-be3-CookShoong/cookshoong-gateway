@@ -49,8 +49,19 @@ jobs:
       - name: Docker Image Push
         run: docker push jeongjewan/cookshoong-gateway
 
-      # 쉘 스크립트 실행
-      - name: execute shell script
+      # 쉘 스크립트 실행 Stop
+      - name: execute shell script stop
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_IP }}
+          username: ${{ secrets.SSH_ID }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script_stop: true
+          script: "./startup.sh"
+
+      # 쉘 스크립트 실행 Start
+      - name: execute shell script start
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_IP }}
