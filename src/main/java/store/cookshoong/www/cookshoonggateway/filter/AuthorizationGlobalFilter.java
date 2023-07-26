@@ -51,6 +51,9 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
+        if (isAuthServerRequest(request) || isNoAuthenticationRequired(request)) {
+            return chain.filter(exchange);
+        }
         if (!existsAuthorizationHeader(request) || !hasOnlyOneAuthorizationHeader(request)) {
             throw new InvalidHeaderException();
         }
@@ -73,6 +76,10 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         return StringUtils.startsWithIgnoreCase(authorizationHeader, "Bearer");
     }
 
+    private static boolean isAuthServerRequest(ServerHttpRequest request) {
+        String requestPath = extractPath(request);
+        return PATH_MATCHER.match("/auth/**", requestPath);
+    }
 
     private static boolean hasOnlyOneAuthorizationHeader(ServerHttpRequest request) {
         List<String> authorizationHeader = extractAuthorizationHeader(request);
@@ -84,6 +91,11 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         return extractAuthorizationHeader(request) != null;
     }
 
+    private static boolean isNoAuthenticationRequired(ServerHttpRequest request) {
+        String pathWithQuery = extractPath(request) + "?" + extractQuery(request);
+        return Arrays.stream(ExcludedPattern.values())
+            .anyMatch(excludedPattern -> PATH_MATCHER.match(excludedPattern.getPattern(), pathWithQuery));
+    }
 
     private static List<String> extractAuthorizationHeader(ServerHttpRequest request) {
         return extractHeaders(request).get(AUTHORIZATION_HEADER);
@@ -115,4 +127,17 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         }
     }
 
+    private enum ExcludedPattern {
+        RETRIEVE_ADDRESS_PATTERN("/api/accounts/customer/*/stores*"),
+        ACCOUNT_REGISTRATION_PATTERN("/api/accounts?authorityCode=*");
+        private final String pattern;
+
+        ExcludedPattern(String pattern) {
+            this.pattern = pattern;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+    }
 }
