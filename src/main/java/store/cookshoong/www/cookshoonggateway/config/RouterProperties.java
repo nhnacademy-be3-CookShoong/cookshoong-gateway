@@ -1,10 +1,8 @@
 package store.cookshoong.www.cookshoonggateway.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * properties 파일 설정.
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "cookshoong")
-@Component
 public class RouterProperties {
     private String backendPath;
 
