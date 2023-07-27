@@ -27,6 +27,7 @@ import store.cookshoong.www.cookshoonggateway.exception.InvalidHeaderException;
 import store.cookshoong.www.cookshoonggateway.exception.InvalidTokenException;
 import store.cookshoong.www.cookshoonggateway.exception.InvalidTokenTypeException;
 import store.cookshoong.www.cookshoonggateway.jwt.JwtParser;
+import store.cookshoong.www.cookshoonggateway.util.RequestUtils;
 
 /**
  * 게이트웨이를 통한 모든 요청들이(auth server 제외) 적용되는 필터.
@@ -78,7 +79,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
     }
 
     private static boolean isAuthServerRequest(ServerHttpRequest request) {
-        String requestPath = extractPath(request);
+        String requestPath = RequestUtils.extractPath(request);
         return PATH_MATCHER.match("/auth/**", requestPath);
     }
 
@@ -99,19 +100,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
     }
 
     private static List<String> extractAuthorizationHeader(ServerHttpRequest request) {
-        return extractHeaders(request).get(AUTHORIZATION_HEADER);
-    }
-
-    private static HttpHeaders extractHeaders(ServerHttpRequest request) {
-        return request.getHeaders();
-    }
-
-    private static String extractPath(ServerHttpRequest request) {
-        return request.getPath().value();
-    }
-
-    private static String extractQuery(ServerHttpRequest request) {
-        return request.getURI().getQuery();
+        return RequestUtils.extractHeaders(request).get(AUTHORIZATION_HEADER);
     }
 
     private static String extractToken(String authorizationHeader) {
