@@ -49,7 +49,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        if (isNoAuthenticationRequired(request)) {
+        if (isAuthServerRequest(request) || isNoAuthenticationRequired(request)) {
             return chain.filter(exchange);
         }
         if (!existsAuthorizationHeader(request) || !hasOnlyOneAuthorizationHeader(request)) {
@@ -79,14 +79,6 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         return PATH_MATCHER.match("/auth/**", requestPath);
     }
 
-        if (RequestUtils.extractQuery(request) != null) {
-            sb.append("?").append(RequestUtils.extractQuery(request));
-        }
-
-        return Arrays.stream(ExcludedPattern.values())
-            .anyMatch(excludedPattern -> PATH_MATCHER.match(excludedPattern.getPattern(), sb.toString()));
-    }
-
     private static boolean hasOnlyOneAuthorizationHeader(ServerHttpRequest request) {
         List<String> authorizationHeader = extractAuthorizationHeader(request);
         Assert.notNull(authorizationHeader, "Authorization 헤더가 존재하지 않습니다.");
@@ -99,8 +91,8 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
 
     private static boolean isNoAuthenticationRequired(ServerHttpRequest request) {
         String pathWithQuery = extractPath(request) + "?" + extractQuery(request);
-    protected static boolean isNoAuthenticationRequired(ServerHttpRequest request) {
-        return isAuthServerRequest(request) || isExcludedPath(request);
+        return Arrays.stream(ExcludedPattern.values())
+            .anyMatch(excludedPattern -> PATH_MATCHER.match(excludedPattern.getPattern(), pathWithQuery));
     }
 
     private static List<String> extractAuthorizationHeader(ServerHttpRequest request) {
