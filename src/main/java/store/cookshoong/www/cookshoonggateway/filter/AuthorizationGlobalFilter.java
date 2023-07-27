@@ -20,10 +20,11 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import store.cookshoong.www.cookshoonggateway.exception.ExpiredTokenException;
 import store.cookshoong.www.cookshoonggateway.exception.InvalidHeaderException;
+import store.cookshoong.www.cookshoonggateway.exception.InvalidTokenException;
 import store.cookshoong.www.cookshoonggateway.exception.InvalidTokenTypeException;
 import store.cookshoong.www.cookshoonggateway.jwt.JwtParser;
 
@@ -121,9 +122,9 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         try {
             jwtParser.parseAccessToken(authorizationToken);
         } catch (ExpiredJwtException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다");
+            throw new ExpiredTokenException();
         } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e2) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다");
+            throw new InvalidTokenException();
         }
     }
 
