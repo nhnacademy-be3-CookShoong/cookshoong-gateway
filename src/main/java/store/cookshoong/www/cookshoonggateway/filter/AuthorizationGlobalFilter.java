@@ -42,7 +42,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return -1;
+        return FilterOrders.AUTHORIZATION;
     }
 
     @Override
