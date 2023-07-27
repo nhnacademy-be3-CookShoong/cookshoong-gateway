@@ -4,7 +4,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
-import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -41,7 +38,6 @@ import store.cookshoong.www.cookshoonggateway.util.RequestUtils;
 public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final int TOKEN_BEGIN_INDEX = 7;
     private final JwtParser jwtParser;
 
     @Override
@@ -104,7 +100,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
     }
 
     private static String extractToken(String authorizationHeader) {
-        return authorizationHeader.substring(TOKEN_BEGIN_INDEX);
+        return authorizationHeader.split("\\s")[1];
     }
 
     private void verifyAccess(String authorizationToken) {
