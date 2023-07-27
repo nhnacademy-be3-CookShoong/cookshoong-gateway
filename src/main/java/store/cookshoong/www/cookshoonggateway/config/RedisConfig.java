@@ -18,6 +18,7 @@ import store.cookshoong.www.cookshoonggateway.skm.SKMService;
  * @author koesnam (추만석)
  * @since 2023.07.26
  */
+@EnableRedisRepositories
 @Configuration
 public class RedisConfig {
     /**
