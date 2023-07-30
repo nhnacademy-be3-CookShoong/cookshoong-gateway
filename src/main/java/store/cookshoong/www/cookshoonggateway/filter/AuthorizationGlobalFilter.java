@@ -89,7 +89,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         return Arrays.stream(ExcludedPattern.values())
             .anyMatch(excludedPattern -> PATH_MATCHER.match(excludedPattern.getPattern(), sb.toString())
                 && Arrays.stream(excludedPattern.getMethods())
-                .an yMatch(m -> m.matches(requestMethod))
+                .anyMatch(m -> m.matches(requestMethod))
             );
     }
 
