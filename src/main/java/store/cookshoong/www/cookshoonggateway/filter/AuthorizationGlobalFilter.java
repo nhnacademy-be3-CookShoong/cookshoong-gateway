@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -84,9 +85,16 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         if (RequestUtils.extractQuery(request) != null) {
             sb.append("?").append(RequestUtils.extractQuery(request));
         }
-
+        String requestMethod = request.getMethodValue();
         return Arrays.stream(ExcludedPattern.values())
-            .anyMatch(excludedPattern -> PATH_MATCHER.match(excludedPattern.getPattern(), sb.toString()));
+            .anyMatch(excludedPattern -> PATH_MATCHER.match(excludedPattern.getPattern(), sb.toString())
+                && Arrays.stream(excludedPattern.getMethods())
+                .anyMatch(m -> m.matches(requestMethod))
+            );
+    }
+
+    protected static boolean isNoAuthenticationRequired(ServerHttpRequest request) {
+        return isAuthServerRequest(request) || isExcludedPath(request);
     }
 
     private static boolean hasOnlyOneAuthorizationHeader(ServerHttpRequest request) {
@@ -97,10 +105,6 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
 
     private static boolean existsAuthorizationHeader(ServerHttpRequest request) {
         return extractAuthorizationHeader(request) != null;
-    }
-
-    protected static boolean isNoAuthenticationRequired(ServerHttpRequest request) {
-        return isAuthServerRequest(request) || isExcludedPath(request);
     }
 
     private static List<String> extractAuthorizationHeader(ServerHttpRequest request) {
@@ -122,16 +126,23 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
     }
 
     private enum ExcludedPattern {
-        RETRIEVE_ADDRESS_PATTERN("/api/accounts/customer/*/stores*"),
-        ACCOUNT_REGISTRATION_PATTERN("/api/accounts?authorityCode=*");
+        RETRIEVE_ADDRESS_PATTERN("/api/accounts/customer/*/stores*", HttpMethod.values()),
+        ACCOUNT_REGISTRATION_PATTERN("/api/accounts?authorityCode=*", HttpMethod.values()),
+        ACCOUNT_STATUS_PATTERN("/api/accounts/*/status", HttpMethod.GET);
         private final String pattern;
+        private final HttpMethod[] methods;
 
-        ExcludedPattern(String pattern) {
+        ExcludedPattern(String pattern, HttpMethod... methods) {
             this.pattern = pattern;
+            this.methods = methods;
         }
 
         public String getPattern() {
             return pattern;
+        }
+
+        public HttpMethod[] getMethods() {
+            return methods;
         }
     }
 }
