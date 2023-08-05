@@ -12,12 +12,18 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
+    types:
+      - closed
 
 jobs:
 
   build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    env:
+      SECURE_KEY_MANAGER_PASSWORD: ${{ secrets.SECURE_KEY_MANAGER_PASSWORD }}
+      SECURE_KEY_MANAGER_APP_KEY: ${{ secrets.SECURE_KEY_MANAGER_APP_KEY }}
 
     steps:
       - uses: actions/checkout@v3
@@ -43,7 +49,7 @@ jobs:
 
       # 이미지 생성
       - name: Build Docker Image
-        run: docker build -t jeongjewan/cookshoong-gateway .
+        run: docker build -t jeongjewan/cookshoong-gateway --build-arg SECURE_KEY_MANAGER_PASSWORD=${{ secrets.SECURE_KEY_MANAGER_PASSWORD }} --build-arg SECURE_KEY_MANAGER_APP_KEY=${{ secrets.SECURE_KEY_MANAGER_APP_KEY }} .
 
       # 도커 허브 푸시
       - name: Docker Image Push
