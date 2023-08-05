@@ -128,6 +128,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
     private enum ExcludedPattern {
         RETRIEVE_ADDRESS_PATTERN("/api/accounts/customer/*/stores*", HttpMethod.values()),
         ACCOUNT_REGISTRATION_PATTERN("/api/accounts?authorityCode=*", HttpMethod.values()),
+        OAUTH_ACCOUNT_REGISTRATION_PATTERN("/api/accounts/oauth2", HttpMethod.POST, HttpMethod.GET),
         ACCOUNT_STATUS_PATTERN("/api/accounts/*/status", HttpMethod.GET);
         private final String pattern;
         private final HttpMethod[] methods;
