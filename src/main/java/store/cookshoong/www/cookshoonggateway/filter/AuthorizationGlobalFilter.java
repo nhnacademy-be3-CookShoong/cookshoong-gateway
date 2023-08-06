@@ -130,7 +130,7 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         ACCOUNT_REGISTRATION_PATTERN("/api/accounts?authorityCode=*", HttpMethod.values()),
         OAUTH_ACCOUNT_REGISTRATION_PATTERN("/api/accounts/oauth2", HttpMethod.POST, HttpMethod.GET),
         ACCOUNT_STATUS_PATTERN("/api/accounts/*/status", HttpMethod.GET),
-        STORE_CATEGORIES_RETRIEVE_PATTERN("api/stores/categories", HttpMethod.GET);
+        STORE_CATEGORIES_RETRIEVE_PATTERN("/api/stores/categories", HttpMethod.GET);
         private final String pattern;
         private final HttpMethod[] methods;
 
