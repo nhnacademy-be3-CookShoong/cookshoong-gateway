@@ -132,7 +132,9 @@ public class AuthorizationGlobalFilter implements GlobalFilter, Ordered {
         ACCOUNT_STATUS_PATTERN("/api/accounts/*/status", HttpMethod.GET),
         STORE_CATEGORIES_RETRIEVE_PATTERN("/api/stores/categories", HttpMethod.GET),
         ACCOUNT_EXISTS_PATTERN("/api/accounts/login-id-exists/*", HttpMethod.GET),
-        ORDER_STATUS_PATTERN("/api/orders/status", HttpMethod.PATCH);
+        ORDER_STATUS_PATTERN("/api/orders/status", HttpMethod.PATCH),
+        SWAGGER_JSON_PATTERN("/api/swagger-ui", HttpMethod.GET);
+
         private final String pattern;
         private final HttpMethod[] methods;
 
