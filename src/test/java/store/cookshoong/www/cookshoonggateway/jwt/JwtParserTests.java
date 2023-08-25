@@ -23,12 +23,10 @@ class JwtParserTests {
     void parse() {
         String tempSecret = "fwelkfjewiogjdfkjbndkjg hneriowjelklkfjioerhgnerklgjsadksladjf";
 
-
         String token = Jwts.builder()
             .signWith(Keys.hmacShaKeyFor(tempSecret.getBytes(StandardCharsets.UTF_8)))
             .setClaims(Map.of("required", "1", "required2", "23412", "required3", System.currentTimeMillis()))
             .compact();
-
 
         String actual = (String) Jwts.parserBuilder()
             .setSigningKey(Keys.hmacShaKeyFor(tempSecret.getBytes(StandardCharsets.UTF_8)))

@@ -27,7 +27,12 @@ public class TokenManagementService {
      * @param rawAccessToken the raw access token
      */
     public void addBlackList(String rawAccessToken) {
-        Claims claims = jwtParser.parseAccessToken(rawAccessToken);
+        Claims claims;
+        try {
+            claims = jwtParser.parseAccessToken(rawAccessToken);
+        } catch (Exception ignore) {
+            return;
+        }
         String jti = (String) claims.get("jti");
         BlockedToken blockedToken = BlockedToken.convertFrom(rawAccessToken, claims);
         blockedTokenRepository.save(blockedToken);
